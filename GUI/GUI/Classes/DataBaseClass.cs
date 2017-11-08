@@ -92,7 +92,7 @@ namespace ProkatAuto22.Classes
                         Reader.Read();
                         ReadedDriver.FIOdriver = Reader.GetString(0);
                         ReadedDriver.PhotoDriver = Reader.GetString(1);
-                        ReadedDriver.ExpirienceDriver = Reader.GetString(2);
+                     //   ReadedDriver.ExpirienceDriver = Reader.GetString(2);                    // ОШИБКА!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                     }
 
                     // Считываем привычки водителя
@@ -180,7 +180,7 @@ namespace ProkatAuto22.Classes
                         "' WHERE ID = '" + DriverEdit.DriverDBID +
                         ";";
                     MyDBLogger("Edit driver driver whis SQL-command: " + Command.CommandText);
-                    Command.ExecuteNonQuery();
+                    Command.ExecuteNonQuery();                                                     // ОШИБКА!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
                     // Удаляем все упоминания о вредных привычках и заново их устанавливаем
                     Command.CommandText = @"DELETE FROM drivers WHERE driverID = '" + DriverEdit.DriverDBID + ";";

@@ -51,7 +51,7 @@ namespace ProkatAuto22.Classes
 
         public void ReadAllDrivers()
         {
-           AllDriversList = new List<DriverClass> (DB.ReadAllDriversDB());
+           AllDriversList = DB.ReadAllDriversDB();
         }
 
         

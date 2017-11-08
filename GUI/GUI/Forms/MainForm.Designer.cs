@@ -128,7 +128,6 @@
             this.listBox1Automobile.Name = "listBox1Automobile";
             this.listBox1Automobile.Size = new System.Drawing.Size(398, 121);
             this.listBox1Automobile.TabIndex = 1;
-            
             // 
             // comboBox2ClassType
             // 
@@ -312,6 +311,7 @@
             this.listBox2Driver.Name = "listBox2Driver";
             this.listBox2Driver.Size = new System.Drawing.Size(314, 147);
             this.listBox2Driver.TabIndex = 24;
+            this.listBox2Driver.SelectedIndexChanged += new System.EventHandler(this.listBox2Driver_SelectedIndexChanged);
             // 
             // button6RedactionDriver
             // 
@@ -378,6 +378,7 @@
             this.textBox2FioDriver.Name = "textBox2FioDriver";
             this.textBox2FioDriver.Size = new System.Drawing.Size(180, 20);
             this.textBox2FioDriver.TabIndex = 15;
+            this.textBox2FioDriver.TextChanged += new System.EventHandler(this.textBox2FioDriver_TextChanged);
             // 
             // pictureBox2
             // 

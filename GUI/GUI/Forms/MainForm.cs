@@ -20,9 +20,11 @@ namespace GUI
         CustomerClass CustomerObjectRead;
         AutomobileClass CarObject;
         OrderClass RequestObject;
-        
 
-        string fileNameDriver;
+
+      // Dictionary<string, string> NameAndFilePath = new Dictionary<string, string>();
+        
+        string destFile;
 
         bool habitSmoke, habitDrink, habitDrugs;
 
@@ -31,20 +33,23 @@ namespace GUI
             InitializeComponent();
             DriverObjectRead = new DriverClass();
             CustomerObjectRead = new CustomerClass();
+            DataBase = new DataBaseClass();
 
-            DriverObjectRead.ReadAllDrivers();
+            
             GetDrivers();
 
             CustomerObjectRead.ReadAllCustomers();
             GetCustomers();
 
-         //   CarObject = new AutomobileClass();
-         //   RequestObject = new OrderClass();
+            //   CarObject = new AutomobileClass();
+            //   RequestObject = new OrderClass();
 
             //   GetCar(CarObject);
             //  GetRequest(RequestObject);
 
             //  comboBox2ClassType.DataSource = CarObject.ClassCarList;
+
+            ButtonDriverDisabled();
 
             dateTimePicker1.Format = DateTimePickerFormat.Custom;
             dateTimePicker1.CustomFormat = "dd.MM.yyyy; hh:mm";
@@ -96,12 +101,13 @@ namespace GUI
             AddPhotoDriver.Filter = ("(*.jpg)|*.jpg|(*.png)|*.png|All files (*.*)|*.*");
              if (AddPhotoDriver.ShowDialog() == DialogResult.OK)
               {
-                fileNameDriver = AddPhotoDriver.SafeFileName;
+                string fileNameDriver = AddPhotoDriver.SafeFileName;
                 string sourcePath = AddPhotoDriver.FileName;
                 string targetPath = @"DriverPhoto";
                 
-                string destFile = Path.Combine(targetPath, fileNameDriver);
-                
+                 destFile = Path.Combine(targetPath, fileNameDriver);
+
+               
                 File.Copy(sourcePath, destFile, true);
               }
         }
@@ -111,7 +117,7 @@ namespace GUI
             DriverClass AddDriver = new DriverClass();
 
             AddDriver.DriverDBID = textBox2IdDriver.Text;
-            AddDriver.PhotoDriver = fileNameDriver;
+            AddDriver.PhotoDriver = destFile;
             AddDriver.FIOdriver = textBox2FioDriver.Text;
             AddDriver.ExpirienceDriver = textBox3ExpirienceDriver.Text;
             AddDriver.DriverHabitSmoke = habitSmoke;
@@ -119,15 +125,20 @@ namespace GUI
             AddDriver.DriverHabitDrugs = habitDrugs;
 
             AddDriver.InsertDriver();
+
+
+            listBox2Driver.Items.Clear();
+            GetDrivers();
+            
         }
 
         private void button6RedactionDriver_Click(object sender, EventArgs e)
         {
-            DriverClass RedactionDriver;
+             DriverClass RedactionDriver= new DriverClass();
             // string idDriver;
-            /*
-            RedactionDriver= DataBase.ReadDriverDB(Int32.Parse(DriverObjectRead.AllDriversList[listBox2Driver.SelectedIndex].DriverDBID));
-            RedactionDriver.PhotoDriver = fileNameDriver;
+
+            RedactionDriver = DataBase.ReadDriverDB(DriverObjectRead.AllDriversList[listBox2Driver.SelectedIndex].DriverDBID);
+            RedactionDriver.PhotoDriver = destFile;
             RedactionDriver.FIOdriver = textBox2FioDriver.Text;
             RedactionDriver.ExpirienceDriver = textBox3ExpirienceDriver.Text;
             RedactionDriver.DriverHabitSmoke = habitSmoke;
@@ -136,23 +147,75 @@ namespace GUI
 
             RedactionDriver.EditDriver();
 
-            listBox2Driver.Refresh();
-            */
+            
+            
         }
 
         
 
         private void GetDrivers()
         {
-            //    for (int i = 0; i < DriverObjectRead.AllDriversList.Count; i++)
-            //      listBox2Driver.Items.Add(DriverObjectRead.AllDriversList[i].FIOdriver);
+            DriverObjectRead.ReadAllDrivers();
+            for (int i = 0; i < DriverObjectRead.AllDriversList.Count; i++)
+            {
+                listBox2Driver.Items.Add(DriverObjectRead.AllDriversList[i].DriverDBID + "\t " + DriverObjectRead.AllDriversList[i].FIOdriver);
+            }
 
             
         }
 
+
+        private void listBox2Driver_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            textBox2FioDriver.Text = DriverObjectRead.AllDriversList[listBox2Driver.SelectedIndex].FIOdriver;
+            textBox3ExpirienceDriver.Text = DriverObjectRead.AllDriversList[listBox2Driver.SelectedIndex].ExpirienceDriver;
+
+
+            if (DriverObjectRead.AllDriversList[listBox2Driver.SelectedIndex].DriverHabitSmoke == true)
+                      { checkBox6Smoke.Checked = true; }
+                else
+                    checkBox6Smoke.Checked = false;
+
+                if (DriverObjectRead.AllDriversList[listBox2Driver.SelectedIndex].DriverHabitDrink == true)
+                { checkBox7Drink.Checked = true; }
+                else
+                    checkBox7Drink.Checked = false;
+
+                if (DriverObjectRead.AllDriversList[listBox2Driver.SelectedIndex].DriverHabitDrugs == true)
+                { checkBox5Drugs.Checked = true; }
+                else
+                   checkBox5Drugs.Checked = false;
+
+            ButtonDriverDisabled();
+
+            if (DriverObjectRead.AllDriversList[listBox2Driver.SelectedIndex].PhotoDriver == "")
+            {
+                pictureBox2.Image = null;
+                pictureBox2.BackColor =  Color.Gray;
+            }
+            else
+                pictureBox2.Load(DriverObjectRead.AllDriversList[listBox2Driver.SelectedIndex].PhotoDriver);
+
+
+
+        }
+
+
+
+        private void textBox2FioDriver_TextChanged(object sender, EventArgs e)
+        {
+            if (textBox2FioDriver.Text == "")
+            { button4AddDriver.Enabled = false; }
+            else
+                button4AddDriver.Enabled = true;
+        }
+
+
+
+
         private void checkBox6Smoke_Click(object sender, EventArgs e)
         {
-            if (checkBox6Smoke.Checked)
+            if (checkBox6Smoke.Checked == true)
                 habitSmoke = true;
             else
                 habitSmoke = false;
@@ -160,7 +223,7 @@ namespace GUI
 
         private void checkBox7Drink_Click(object sender, EventArgs e)
         {
-            if (checkBox7Drink.Checked)
+            if (checkBox7Drink.Checked == true)
                 habitDrink = true;
             else
                 habitDrink = false;
@@ -168,11 +231,12 @@ namespace GUI
 
         private void checkBox5Drugs_Click(object sender, EventArgs e)
         {
-            if (checkBox5Drugs.Checked)
+            if (checkBox5Drugs.Checked == true)
                 habitDrugs = true;
             else
                 habitDrugs = false;
         }
+
 
         //////////////////////////// Заявки
         private void button9AddRequest_Click(object sender, EventArgs e)
@@ -256,14 +320,23 @@ namespace GUI
 
         }
 
+        
+
         private void label4_Click(object sender, EventArgs e)
         {
 
         }
 
+        
+
         private void label21_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void ButtonDriverDisabled()
+        {
+             button4AddDriver.Enabled = false; 
         }
 
     }
